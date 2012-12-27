@@ -1,5 +1,5 @@
 
 #include "htest/htest.h"
 
-htest::TestBucket* htest::TestBucket::instance;
+htest::TestBucket* htest::TestBucket::instance = NULL;
 

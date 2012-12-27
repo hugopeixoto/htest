@@ -3,6 +3,7 @@
 #define HTEST_HTEST_H_
 
 #include <exception>
+#include <iostream>
 #include <list>
 
 namespace htest {
@@ -13,11 +14,14 @@ namespace htest {
     bool Run () {
       try {
         TestBody();
-      } catch (std::exception const&) {
+      } catch (std::exception const& e) {
+        // std::cerr << e.what() << std::endl;
         return false;
       }
       return true;
     }
+
+    virtual const char* Description () = 0;
 
     void Assert (bool a_value) {
       if (a_value == false) {
@@ -28,19 +32,24 @@ namespace htest {
 
   class TestBucket {
     public:
-    static int Register (Test* a_test) {
+    static TestBucket* Instance ()
+    {
       if (!instance) {
         instance = new TestBucket();
       }
 
-      instance->tests_.push_back(a_test);
+      return instance;
+    }
+
+    static int Register (Test* a_test) {
+      Instance()->tests_.push_back(a_test);
       return 0;
     }
 
     std::list<Test*> tests_;
 
     static TestBucket* instance;
-    static const std::list<Test*> tests () { return instance->tests_; }
+    static const std::list<Test*> tests () { return Instance()->tests_; }
   };
 }
 
